@@ -1,34 +1,27 @@
-import {Button, FormControl, FormLabel, Heading, Input} from "@chakra-ui/react";
-import React,{useState} from "react";
+import {Button, FormLabel, Heading, Input} from "@chakra-ui/react";
+import React from "react";
 import axios from "axios";
-
-
+import {useDispatch, useSelector} from 'react-redux';
+import {setUsername, setPassword, setEmail} from '../redux/userSlice';
+import {RootState} from '../redux/stores';
 
 const RegisterForm:React.FC = () => {
+    const dispatch = useDispatch();
+    const {username, password, email} = useSelector((state: RootState) => state.user);
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!username.trim() || !password.trim()) {
-            alert("Username and password cannot be empty")
-            return;
-        }
-        else {
-            try {
-                await axios.post("http://localhost:3001/api/signup", { username, password });
-                console.log("Signup successful!");
-            } catch (error) {
-                console.error(error);
-            }
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post("http://localhost:5000/api/auth/signup", {username, password, email});
+            console.log("Registered successful!", response.data);
+        } catch (error) {
+            console.error(error);
         }
     }
 
     return (
        <div>
-           <FormControl onSubmit={handleSubmit}>
+           <form onSubmit={handleSubmit}>
 
                <Heading>Register</Heading>
 
@@ -38,26 +31,37 @@ const RegisterForm:React.FC = () => {
                        type="text"
                        id="username"
                        value={username}
-                       onChange={(e) => setUsername(e.target.value)}
+                       onChange={(e) => dispatch(setUsername(e.target.value))}
                    />
                </FormLabel>
 
                <FormLabel>
                    Password:
                    <Input
-                       type="text"
+                       type="password"
                        id="password"
                        value={password}
-                       onChange={(e) => setPassword(e.target.value)}
+                       onChange={(e) => dispatch(setPassword(e.target.value))}
+                   />
+               </FormLabel>
+
+               <FormLabel>
+                   Email:
+                   <Input
+                       type="email"
+                       id="email"
+                       value={email}
+                       onChange={(e) => dispatch(setEmail(e.target.value))}
                    />
                </FormLabel>
 
                <Button
                    type="submit"
-                   value="Submit"
-               >Submit</Button>
+               >
+                   Register
+               </Button>
 
-           </FormControl>
+           </form>
        </div>
     )
 }

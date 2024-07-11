@@ -1,25 +1,75 @@
-import {Form} from "react-router-dom";
-import {Input, FormControl, FormLabel, FormErrorMessage, FormHelperText, Button, Heading,} from "@chakra-ui/react";
-
+import {Input, FormControl, FormLabel, Button, Heading,} from "@chakra-ui/react";
+import axios from "axios";
+import {useDispatch, useSelector} from 'react-redux';
+import {setUsername, setPassword} from '../redux/userSlice';
+import {RootState} from '../redux/stores';
+import React, {useState} from "react";
+import { useNavigate } from "react-router-dom"
+import {jwtDecode} from "jwt-decode";
 
 const LoginForm = () => {
+    const dispatch = useDispatch();
+    const {username, password} = useSelector((state: RootState) => state.user);
+    const [isLoading, setIsLoading] = useState(false);
 
+    const navigate = useNavigate();
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        setIsLoading(true);
+        try {
+            const response = await axios.post("http://localhost:5000/api/auth/login", {username, password});
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            localStorage.setItem('USER_INFO', JSON.stringify(jwtDecode(JSON.stringify(token))))
+            setIsLoading(false);
+            navigate('/NewsComponent');
+            console.log("Login successful!", response.data);
+        } catch (error) {
+            setIsLoading(false);
+            console.error(error);
+        }
+    }
 
     return (
-        <div>
-            <FormControl>
-                <Heading>Login</Heading>
+        <form onSubmit={handleSubmit}>
+
+            <Heading>Login</Heading>
+            <FormControl
+                id="username" isRequired>
+
                 <FormLabel>
-                    Username:
-                    <Input type="text" name="username" />
+                    Username
                 </FormLabel>
-                <FormLabel>
-                    Password:
-                    <Input type="text" name="password" />
-                </FormLabel>
-                <Button type="submit" value="Submit" >Submit</Button>
+
+                <Input
+                       type="username"
+                       value={username}
+                       onChange={(e) => dispatch(setUsername(e.target.value))}/>
             </FormControl>
-        </div>
-    );
+
+            <FormControl
+                id="password" isRequired>
+
+                <FormLabel>
+                    Password
+                </FormLabel>
+
+                <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => dispatch(setPassword(e.target.value))}/>
+            </FormControl>
+
+            <Button
+                isLoading={isLoading}
+                loadingText="Submitting"
+                colorScheme="teal"
+                variant="outline"
+                type="submit"
+            >
+                Submit
+            </Button>
+        </form>
+    )
 }
 export default LoginForm;
