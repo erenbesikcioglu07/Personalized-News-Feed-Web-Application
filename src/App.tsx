@@ -4,8 +4,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import WelcomePage from "./Pages/WelcomePage";
 import MainPage from "./Pages/MainPage";
 import { BrowserRouter as Router, Routes ,Route} from 'react-router-dom';
-import NewsComponent from "./Pages/newsComponent";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import NewsPage from "./Pages/newsPage";
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
       <Router>
         <Routes>
             <Route element={<PrivateRoute/>}>
-                <Route path="/NewsComponent" element={<NewsComponent/>}/>
+                <Route path="/NewsComponent" element={<NewsPage/>}/>
                 <Route path="/MainPage" element={<MainPage/>} />
             </Route>
           <Route path="/" element={<WelcomePage/>} />

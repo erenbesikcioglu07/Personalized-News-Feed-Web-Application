@@ -16,7 +16,7 @@ import {
 import {useNavigate} from "react-router-dom";
 import ModalComponent from "../Components/Modal";
 
-const NewsComponent = () => {
+const NewsPage = () => {
 
     interface ArticleNewsAPI {
         author: string;
@@ -54,8 +54,7 @@ const NewsComponent = () => {
     ];
 
     const apiNames:string[] = [
-        "newsapi",
-        "guardian"
+        "newsapi"
     ];
 
 
@@ -223,4 +222,4 @@ const NewsComponent = () => {
 
 
 }
-export default NewsComponent;
+export default NewsPage;

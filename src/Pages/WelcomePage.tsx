@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Button, Container, Flex, Grid, HStack, Spacer, VStack, Wrap} from '@chakra-ui/react'
+import {Box, Button, Container, Flex, Grid, HStack, Spacer, VStack, Wrap} from '@chakra-ui/react'
 import LoginForm from "../Components/LoginForm";
 import RegisterForm from "../Components/RegisterForm";
 
@@ -16,7 +16,15 @@ const WelcomePage = () => {
   };
 
   return(
-      <Container>
+
+      <Box
+          backgroundImage="url('https://img.freepik.com/free-vector/global-earth-blue-technology-digital-background-design_1017-27075.jpg')"
+            backgroundSize="cover"
+            backgroundPosition="center"
+            backgroundRepeat="no-repeat"
+          height="100vh"
+      >
+
         <Flex direction="column"
               justify="center"
               align="center"
@@ -42,7 +50,7 @@ const WelcomePage = () => {
           </HStack>
           {renderForm()}
         </Flex>
-      </Container>
+      </Box>
   )
 }
 

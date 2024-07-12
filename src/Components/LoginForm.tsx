@@ -1,4 +1,18 @@
-import {Flex, Heading, Input, Button, Stack, Box, FormControl, FormLabel, AlertIcon, Alert, AlertTitle,} from "@chakra-ui/react";
+import {
+    Flex,
+    Heading,
+    Input,
+    Button,
+    Stack,
+    Box,
+    FormControl,
+    FormLabel,
+    AlertIcon,
+    Alert,
+    AlertTitle,
+    Text,
+    HStack
+} from "@chakra-ui/react";
 import {useDispatch, useSelector} from "react-redux";
 import {setUsername, setPassword} from '../redux/userSlice';
 import {RootState} from '../redux/stores';
@@ -6,7 +20,6 @@ import React, {useState} from "react";
 import { useNavigate } from "react-router-dom"
 import {jwtDecode} from "jwt-decode";
 import axios from "axios";
-
 
 
 const LoginForm = () => {
@@ -49,7 +62,7 @@ const LoginForm = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Heading color="teal.400">Welcome</Heading>
+                <Heading color="white">Log In</Heading>
                 <Box minW={{ base: "90%", md: "468px" }}>
                     <form onSubmit={handleSubmit} >
                         <Stack
@@ -98,12 +111,12 @@ const LoginForm = () => {
                     </form>
                 </Box>
             </Stack>
-            <Box>
-                New to us?{" "}
+            <HStack>
+                <Text color="white">New to us?</Text>
                 <Button color="teal.500" onClick={() => navigate('/signup')}>
                     Sign Up
                 </Button>
-            </Box>
+            </HStack>
             {loginError && (
                 <Alert status="error">
                     <AlertIcon />

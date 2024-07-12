@@ -11,7 +11,7 @@ import {
     Input,
     Stack
 } from "@chakra-ui/react";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {useDispatch, useSelector} from 'react-redux';
 import {setUsername, setPassword, setEmail} from '../redux/userSlice';
@@ -24,6 +24,17 @@ const RegisterForm:React.FC = () => {
     const [registerError, setRegisterError] = useState(false);
     const {username, password, email} = useSelector((state: RootState) => state.user);
 
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (registerError) {
+            timer = setTimeout(() => {
+                setRegisterError(false);
+            }, 5000); // 5 seconds
+        }
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [registerError]);
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
@@ -50,7 +61,7 @@ const RegisterForm:React.FC = () => {
                 justifyContent="center"
                 alignItems="center"
             >
-                <Heading color="teal.800">Register</Heading>
+                <Heading color="white">Register</Heading>
                 <Box minW={{ base: "90%", md: "468px" }}>
                    <form onSubmit={handleSubmit}>
                        <Stack
