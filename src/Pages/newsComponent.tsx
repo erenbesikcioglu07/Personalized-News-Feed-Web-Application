@@ -1,10 +1,23 @@
 import axios from 'axios';
-import React from "react";
+import React, {useEffect} from "react";
 import { useState } from 'react';
-import {Button, Input, Select} from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Card,
+    CardBody, Grid,
+    Heading,
+    Image,
+    Input,
+    Select,
+    Stack,
+    Text, Wrap
+} from "@chakra-ui/react";
 import {useNavigate} from "react-router-dom";
+import ModalComponent from "../Components/Modal";
 
 const NewsComponent = () => {
+
     interface ArticleNewsAPI {
         author: string;
         title: string;
@@ -14,15 +27,6 @@ const NewsComponent = () => {
         content: string;
         category: string;
     }
-    // interface ArticleGuardian {
-    //     webTitle: string;
-    //     webUrl: string;
-    //     webPublicationDate: string;
-    //     fields: {
-    //         thumbnail: string;
-    //         bodyText: string;
-    //     }
-    // }
 
     const [filterData ,setFilterData] = useState<{
         keywords: string;
@@ -34,7 +38,10 @@ const NewsComponent = () => {
         category: ''
     });
 
+    const navigation = useNavigate();
+
     const [articlesNewsApi, setArticlesNewsApi] = useState<ArticleNewsAPI[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const categories:string[] = [
         "business",
@@ -51,6 +58,8 @@ const NewsComponent = () => {
         "guardian"
     ];
 
+
+
     const fetchArticles = async () => {
             try {
                 const {keywords, category} = filterData;
@@ -66,8 +75,11 @@ const NewsComponent = () => {
             }
 
     };
+    useEffect(() => {
+        fetchArticles();
+        setIsModalOpen(true);
+    }, []);
 
-    const navigation = useNavigate();
 
     const handleSourceChange = (e:any) => {
         const value = e.target.value;
@@ -78,61 +90,134 @@ const NewsComponent = () => {
             }
         });
     };
-const userInfo = JSON.parse(localStorage.getItem('USER_INFO')!);
+
+
     return (
         <div>
-            {userInfo && userInfo.username! && <h1>Welcome {userInfo.username!}</h1>}
-            <Button onClick={() => {
-                localStorage.removeItem('token');
-                localStorage.removeItem('USER_INFO');
-                navigation('/');
-            }}>Logout</Button>
-            <Input
-                type="text"
-                value={filterData.keywords}
-                onChange={(e) => setFilterData(prev => {
-                    return {
-                        ...prev,
-                        keywords: e.target.value
-                    }
-                })}
-                placeholder="Search for news..."
-            />
+            <Grid
+                h='100px'
+                bg='grey'
+                templateColumns='repeat(2,1fr)'
+                gap={1200}
+            >
+                <Box>
+                    <ModalComponent isOpen={isModalOpen} />
+                        <Text
+                            fontSize='30px'
+                            as='b'
+                        >
+                            News Feed Application
+                        </Text>
+                </Box>
+                <Box>
+                    <Button
+                        color='black'
+                        onClick={() => {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('USER_INFO');
+                        navigation('/');
+                    }}>Logout</Button>
+                </Box>
+            </Grid>
 
-            <Select multiple onChange={handleSourceChange}>
-                {apiNames.map((source, index) => (
-                    <option key={index} value={source}>{source}</option>
-                ))}
-            </Select>
+            <Box
+                w='100%'
+                p='5'
+            >
+                <Wrap>
+                    <Input
+                        h='50px'
+                        type="text"
+                        value={filterData.keywords}
+                        onChange={(e) => setFilterData(prev => {
+                            return {
+                                ...prev,
+                                keywords: e.target.value
+                            }
+                        })}
+                        onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                                fetchArticles();
+                            }
+                        }}
+                        placeholder="Search for news..."
+                    />
 
-            <Select placeholder={"Select category"} onChange={(e) => setFilterData(prev => {
-                return {
-                    ...prev,
-                    category: e.target.value
-                }
-            })}>
+                    <Select
+                        placeholder={"Select source"}
+                        onChange={handleSourceChange}
+                        w='200px'
+                    >
+                        {apiNames.map((source, index) => (
+                            <option key={index} value={source}>{source}</option>
+                        ))}
+                    </Select>
 
-                {categories.map((category, index) => (
-                    <option key={index} value={category}>{category}</option>
-                ))}
-            </Select>
+                    <Select
+                        w='200px'
+                        placeholder={"Select category"}
+                        onChange={(e) => setFilterData(prev => {
+                        return {
+                            ...prev,
+                            category: e.target.value
+                        }
+                    })}>
+
+                        {categories.map((category, index) => (
+                            <option key={index} value={category}>{category}</option>
+                        ))}
+                    </Select>
 
 
-            <Button onClick={fetchArticles}>Search</Button>
-            <div>
+                    <Button
+                        onClick={fetchArticles}
 
-
+                    >Search</Button>
+                </Wrap>
+            </Box>
+            <Box
+                bg='blue'
+                w='100%'>
+                <Text color='white' fontSize='3xl' align='center'>News</Text>
+            </Box>
+            <div className="card-container">
                 {articlesNewsApi.map((article, index) => (
-                    <div key={index}>
-                        {article.urlToImage && <img src={article.urlToImage} alt={article.title}/>}
-                        <h3>{article.title}</h3>
-                        <p>{article.description}</p>
-                        <p>{article.author}</p>
+                    <Box
+                        key={index}
+                        maxW='xl'
+                        borderWidth='5px'
+                        borderRadius='10px'
+                    >
+                        <Card align='center' key={index} size='md' >
+                            <CardBody>
+                                {article.urlToImage &&
+                                    <Image boxSize='500px'
+                                           objectFit='cover'
+                                           src={article.urlToImage}
+                                           alt={article.title}
+                                    />}
 
-                    </div>
+                                <Stack mt='6' spacing='3' >
+                                    <Heading as='h3' size='md'>
+                                        {article.title}
+                                    </Heading>
+                                    <Text>
+                                        {article.description}
+                                    </Text>
+                                    <Text color={'gray.500'} fontSize='xl'>
+                                        {article.author}
+                                    </Text>
+
+                                </Stack>
+                            </CardBody>
+                        </Card>
+                    </Box>
                 ))}
-
             </div>
+            );
+
+
+
         </div>
     );
 
