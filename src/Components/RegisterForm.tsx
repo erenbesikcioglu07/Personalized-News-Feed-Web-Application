@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setUsername, setPassword, setEmail} from '../redux/userSlice';
 import {RootState} from '../redux/stores';
 
+
 const RegisterForm:React.FC = () => {
     const dispatch = useDispatch();
 
@@ -29,7 +30,7 @@ const RegisterForm:React.FC = () => {
         if (registerError) {
             timer = setTimeout(() => {
                 setRegisterError(false);
-            }, 5000); // 5 seconds
+            }, 5000);
         }
         return () => {
             clearTimeout(timer);
@@ -38,7 +39,7 @@ const RegisterForm:React.FC = () => {
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         try {
-            const response = await axios.post("http://localhost:5000/api/auth/signup", {username, password, email});
+            const response = await axios.post(`${process.env.REACT_APP_PORT_SIGNUP_URL}`, {username, password, email});
             console.log("Registered successful!", response.data);
             setRegisterSuccess(true);
         } catch (error) {

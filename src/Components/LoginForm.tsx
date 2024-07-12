@@ -34,7 +34,7 @@ const LoginForm = () => {
         event.preventDefault();
         setIsLoading(true);
         try {
-            const response = await axios.post("http://localhost:5000/api/auth/login", {username, password});
+            const response = await axios.post(`${process.env.REACT_APP_PORT_LOGIN_URL}`, {username, password});
             const token = response.data.token;
             localStorage.setItem('token', token);
             localStorage.setItem('USER_INFO', JSON.stringify(jwtDecode(JSON.stringify(token))))

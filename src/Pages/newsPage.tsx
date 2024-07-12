@@ -62,7 +62,7 @@ const NewsPage = () => {
     const fetchArticles = async () => {
             try {
                 const {keywords, category} = filterData;
-                const response = await axios.get('http://localhost:5000/api/auth/newsApi', {
+                const response = await axios.get(`${process.env.REACT_APP_PORT_GET_NEWSAPI_URL}`, {
                     params: {keywords, category},
                     headers: {
                         "Authorization": `Bearer ${localStorage.getItem('token')}`
